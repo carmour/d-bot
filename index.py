@@ -29,24 +29,20 @@ import get_activity
 #         print('request.json: ', request.json)
 #         # print('activity id: ', request.json['object_id'])
 #         new_activity = request.json
-#         # token refresh strava api
-#         # token write json file
-#         # token read json file
-#         # get request strava api
 #         # give data to webhook function
 
 #         return make_response('Ok'), 200
 
 #     return 'hello'
 
-def testing_refresh(user_id):
+# this should really be in a different file as well, maybe main.py?
+def testing_refresh(user_id, activity_id):
     access_token = refresh_tokens.return_access_token(user_id)
-    print(access_token)
-    # get_activity(access_token)
+    # print(access_token)
+    print(get_activity.get_activity(activity_id, access_token))
 
-testing_refresh('58937648')
+testing_refresh('58937648', '4820893608')
 
-# TODO: automate get request to strava api using the generated tokens
 # TODO: send that info to a disco webhook and DONE
 
 # if __name__ == '__main__':
