@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 
 import refresh_tokens
+import get_activity
 
 # app = Flask(__name__)
 
@@ -39,13 +40,14 @@ import refresh_tokens
 #     return 'hello'
 
 def testing_refresh(user_id):
-    refresh_token = refresh_tokens.find_refresh(user_id)
-    access_token = refresh_tokens.refresh_access(refresh_token[0], refresh_token[1])
+    access_token = refresh_tokens.return_access_token(user_id)
     print(access_token)
+    # get_activity(access_token)
 
 testing_refresh('58937648')
 
 # TODO: automate get request to strava api using the generated tokens
+# TODO: send that info to a disco webhook and DONE
 
 # if __name__ == '__main__':
 #     app.run()
