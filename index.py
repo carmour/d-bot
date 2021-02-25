@@ -30,9 +30,12 @@ def webhook():
         new_event = request.json
         user_id = str(request.json['owner_id']) 
         activity_id = str(request.json['object_id'])
-        show_biz(user_id, activity_id)
-
-        return make_response('Ok'), 200
+        try:
+            show_biz(user_id, activity_id)
+        except TypeError as e:
+            print(e)
+        finally:
+            return make_response('Ok'), 200
 
     return 'Testing'
 

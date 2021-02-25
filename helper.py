@@ -1,5 +1,6 @@
 import json
 
+# try/except finding a user?
 def find_user(user_id):
     f = open('user_ids_test_2.json')
     user_data = json.load(f)
