@@ -37,9 +37,30 @@ def webhook():
         finally:
             return make_response('Ok'), 200
 
-    return 'Testing'
+    return 'x'
+
+# TEST ROUTE -- same as webhook receipt above
+@app.route('/testing', methods=['POST'])
+def testing_route():
+    if request.json['aspect_type'] == 'create':
+        try:
+            print('request.json: ', request.json)
+            new_event = request.json
+            user_id = str(request.json['owner_id'])
+            activity_id = str(request.json['object_id'])
+            show_biz(user_id, activity_id)
+        except TypeError as e:
+            print(e)
+        except Exception as e:
+            print('Unhandled error:', e)
+        finally:
+            return make_response('Ok'), 200
+    else:
+        print('type != create')
+        return make_response('Ok'), 200
 
 def show_biz(user_id, activity_id):
+    # print('show_biz being called')
     # test_act = webhook_handler.testing_refresh('58937648', '4820893608')
     test_act = webhook_handler.testing_refresh(user_id, activity_id)
     disco_webhook.push_disco(test_act)
