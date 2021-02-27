@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify, make_response
 import os
 from dotenv import load_dotenv
+import logging
+from datetime import datetime
 
 import webhook_handler
 import disco_webhook
 
+logging.basicConfig(filename='errors.log', level=logging.WARNING)
 app = Flask(__name__)
 
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -51,6 +54,7 @@ def testing_route():
             show_biz(user_id, activity_id)
         except TypeError as e:
             print(e)
+            # logging.warning('------------------------', 'Time:', datetime.now(), '\n', 'Error:', e,'\n', '------------------------')
         except Exception as e:
             print('Unhandled error:', e)
         finally:

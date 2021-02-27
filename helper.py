@@ -1,6 +1,5 @@
 import json
 
-# try/except finding a user?
 def find_user(user_id):
     f = open('user_ids.json')
     user_data = json.load(f)
@@ -18,12 +17,3 @@ def write_tokens(new_refresh_token, new_access_token, user_id):
                 item['refresh_token'] = new_refresh_token
     with open('user_ids.json', 'w') as f:
         json.dump(user_data, f, indent=4)
-
-
-# helper functions
-
-
-
-# rewrite tokens in json file
-# read tokens in json file
-

@@ -14,7 +14,9 @@ test_dict_create = sample_activity.test_dict_create
 # print(test_json)
 
 url = 'http://localhost:5000/testing'
-x = requests.post(url, json = test_dict)
+# x = requests.post(url, json = test_dict)
 # x = requests.post(url, json = activity_dict)
-# x = requests.post(url, json = test_dict_create)
+x = requests.post(url, json = test_dict_create)
+
+# this one will throw an error
 # x = requests.post(url, data = {'some': 'data'})
