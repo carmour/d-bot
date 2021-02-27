@@ -70,7 +70,7 @@ def testing_route():
         print('type != create')
         user_id = str(request.json['owner_id'])
         name = private_event(user_id)['name']
-        posts_logger.info(f"{name} has posted a private activity.")
+        posts_logger.info(f"{name} posted a private activity.")
         return make_response('Ok'), 200
 
 def show_biz(user_id, activity_id):
