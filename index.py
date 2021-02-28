@@ -8,10 +8,6 @@ import disco_webhook
 import logging_handler
 import helper
 
-error_logger = logging_handler.setup_logger('error_logging', 'errors.log')
-# error_logger.setLevel(logging.INFO)
-posts_logger = logging_handler.setup_logger('post_logging', 'posts.log')
-posts_logger.setLevel(logging.INFO)
 app = Flask(__name__)
 
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -52,25 +48,30 @@ def testing_route():
     if request.json['aspect_type'] == 'create':
         try:
             print('request.json: ', request.json)
-            new_event = request.json
-            user_id = str(request.json['owner_id'])
+            # new_event = request.json
+            # user_id = str(request.json['owner_id'])
             # below will throw a TypeError
-            # user_id = (request.json['owner_id'])
+            user_id = (request.json['owner_id'])
             activity_id = str(request.json['object_id'])
-            show_biz(user_id, activity_id)
+            if request.json['updates']['private'] == 'false':
+                show_biz(user_id, activity_id)
+            else:
+                user_id = str(request.json['owner_id'])
+                name = private_event(user_id)['name']
+                logging_handler.posts_logger.info(f"{name} posted a private activity.")
         except TypeError as e:
             print(e)
-            error_logger.warning("TypeError: ", exc_info=True)
+            logging_handler.error_logger.warning("TypeError: ", exc_info=True)
         except Exception as e:
             print('Unhandled error:', e)
-            error_logger.warning("Unhandled error: ", exc_info=True)
+            logging_handler.error_logger.warning("Unhandled error: ", exc_info=True)
         finally:
             return make_response('Ok'), 200
     else:
         print('type != create')
-        user_id = str(request.json['owner_id'])
-        name = private_event(user_id)['name']
-        posts_logger.info(f"{name} posted a private activity.")
+        # user_id = str(request.json['owner_id'])
+        # name = private_event(user_id)['name']
+        # posts_logger.info(f"{name} posted a private activity.")
         return make_response('Ok'), 200
 
 def show_biz(user_id, activity_id):

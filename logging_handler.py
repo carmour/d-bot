@@ -12,3 +12,8 @@ def setup_logger(name, log_file, level=logging.INFO):
     logger.addHandler(handler)
 
     return logger
+
+error_logger = setup_logger('error_logging', 'errors.log')
+# error_logger.setLevel(logging.INFO)
+posts_logger = setup_logger('post_logging', 'posts.log')
+posts_logger.setLevel(logging.INFO)
