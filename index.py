@@ -28,36 +28,62 @@ def webhook():
             else:
                 return make_response('Forbidden'), 403
     elif request.method == 'POST':
-        # webhook received here
-        print('request.json: ', request.json)
-        new_event = request.json
-        user_id = str(request.json['owner_id']) 
+        # strava webhook receipt handled here
+        user_id = str(request.json['owner_id'])
         activity_id = str(request.json['object_id'])
-        try:
-            show_biz(user_id, activity_id)
-        except TypeError as e:
-            print(e)
-        finally:
+        action = str(request.json['aspect_type'])
+        name = helper.find_user(user_id)['name']
+        if action == 'create':
+            try:
+                print('request.json: ', request.json)
+                if request.json['updates']['private'] == 'false':
+                    show_biz(user_id, activity_id)
+                else:
+                    logging_handler.posts_logger.info(f"{name} posted a private activity.")
+            except TypeError as e:
+                print(e)
+                logging_handler.error_logger.warning("TypeError: ", exc_info=True)
+            except Exception as e:
+                print('Unhandled error:', e)
+                logging_handler.error_logger.warning("Unhandled error: ", exc_info=True)
+            finally:
+                return make_response('Ok'), 200
+        else:
+            print('type != create')
+            logging_handler.posts_logger.info(f"{name} {action}d an activity.")
             return make_response('Ok'), 200
+        
+        # webhook received here
+        # print('request.json: ', request.json)
+        # user_id = str(request.json['owner_id']) 
+        # activity_id = str(request.json['object_id'])
+        # try:
+        #     show_biz(user_id, activity_id)
+        # except TypeError as e:
+        #     print(e)
+        # finally:
+        #     return make_response('Ok'), 200
 
     return 'x'
 
 # TEST ROUTE -- same as webhook receipt above, tested with testing_endpoint.py module
 @app.route('/testing', methods=['POST'])
 def testing_route():
-    if request.json['aspect_type'] == 'create':
+    user_id = str(request.json['owner_id'])
+    # below will throw a TypeError for testing
+    # user_id = (request.json['owner_id'])
+    activity_id = str(request.json['object_id'])
+    action = str(request.json['aspect_type'])
+    name = helper.find_user(user_id)['name']
+    if action == 'create':
         try:
             print('request.json: ', request.json)
-            # new_event = request.json
             # user_id = str(request.json['owner_id'])
-            # below will throw a TypeError
-            user_id = (request.json['owner_id'])
-            activity_id = str(request.json['object_id'])
+            # activity_id = str(request.json['object_id'])
+            # name = helper.find_user(user_id)['name']
             if request.json['updates']['private'] == 'false':
                 show_biz(user_id, activity_id)
             else:
-                user_id = str(request.json['owner_id'])
-                name = private_event(user_id)['name']
                 logging_handler.posts_logger.info(f"{name} posted a private activity.")
         except TypeError as e:
             print(e)
@@ -69,19 +95,13 @@ def testing_route():
             return make_response('Ok'), 200
     else:
         print('type != create')
-        # user_id = str(request.json['owner_id'])
-        # name = private_event(user_id)['name']
-        # posts_logger.info(f"{name} posted a private activity.")
+        logging_handler.posts_logger.info(f"{name} {action}d an activity.")
         return make_response('Ok'), 200
 
 def show_biz(user_id, activity_id):
-    # print('show_biz being called')
     # test_act = webhook_handler.testing_refresh('58937648', '4820893608')
     test_act = webhook_handler.testing_refresh(user_id, activity_id)
     disco_webhook.push_disco(test_act)
-
-def private_event(user_id):
-    return helper.find_user(user_id)
 
 if __name__ == '__main__':
     app.run()
