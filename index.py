@@ -33,13 +33,10 @@ def webhook():
         activity_id = str(request.json['object_id'])
         action = str(request.json['aspect_type'])
         name = helper.find_user(user_id)['name']
+        print('request.json: ', request.json)
         if action == 'create':
             try:
-                print('request.json: ', request.json)
-                if request.json['updates']['private'] == 'false':
-                    show_biz(user_id, activity_id)
-                else:
-                    logging_handler.posts_logger.info(f"{name} posted a private activity.")
+                show_biz(user_id, activity_id)
             except TypeError as e:
                 print(e)
                 logging_handler.error_logger.warning("TypeError: ", exc_info=True)
@@ -50,20 +47,8 @@ def webhook():
                 return make_response('Ok'), 200
         else:
             print('type != create')
-            logging_handler.posts_logger.info(f"{name} {action}d an activity.")
+            logging_handler.posts_logger.info(f"{name} {action}d an activity with an activity ID of {activity_id}.")
             return make_response('Ok'), 200
-        
-        # webhook received here
-        # print('request.json: ', request.json)
-        # user_id = str(request.json['owner_id']) 
-        # activity_id = str(request.json['object_id'])
-        # try:
-        #     show_biz(user_id, activity_id)
-        # except TypeError as e:
-        #     print(e)
-        # finally:
-        #     return make_response('Ok'), 200
-
     return 'x'
 
 # TEST ROUTE -- same as webhook receipt above, tested with testing_endpoint.py module
@@ -78,13 +63,7 @@ def testing_route():
     if action == 'create':
         try:
             print('request.json: ', request.json)
-            # user_id = str(request.json['owner_id'])
-            # activity_id = str(request.json['object_id'])
-            # name = helper.find_user(user_id)['name']
-            if request.json['updates']['private'] == 'false':
-                show_biz(user_id, activity_id)
-            else:
-                logging_handler.posts_logger.info(f"{name} posted a private activity.")
+            show_biz(user_id, activity_id)
         except TypeError as e:
             print(e)
             logging_handler.error_logger.warning("TypeError: ", exc_info=True)
@@ -94,14 +73,19 @@ def testing_route():
         finally:
             return make_response('Ok'), 200
     else:
+        print('request.json: ', request.json)
         print('type != create')
-        logging_handler.posts_logger.info(f"{name} {action}d an activity.")
+        logging_handler.posts_logger.info(f"{name} {action}d an activity with an activity ID of {activity_id}.")
         return make_response('Ok'), 200
 
 def show_biz(user_id, activity_id):
-    # test_act = webhook_handler.testing_refresh('58937648', '4820893608')
     test_act = webhook_handler.testing_refresh(user_id, activity_id)
-    disco_webhook.push_disco(test_act)
+    if test_act['visibility'] == 'only_me':
+        name = helper.find_user(user_id)['name']
+        logging_handler.posts_logger.info(f"{name} posted a private activity with an ID of {activity_id}.")
+        return
+    else:
+        disco_webhook.push_disco(test_act)
 
 if __name__ == '__main__':
     app.run()

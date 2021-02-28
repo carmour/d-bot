@@ -17,7 +17,7 @@ def push_disco(activity):
     activity_duration = activity['moving_time']
     activity_distance = activity['distance']/1000
 
-    logging_handler.posts_logger.info(f"{name} posted an activity.")
+    logging_handler.posts_logger.info(f"{name} posted an activity with an ID of {activity['id']}.")
     content = f"{name} just posted to Strava! This hero just went on a {activity_type} for {activity_distance}km in {activity_duration}s. What a MACHINE! Kudos!"
     
     webhook = DiscordWebhook(url=disco_url, username='Twang reloaded', content=content)
