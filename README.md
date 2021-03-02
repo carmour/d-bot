@@ -20,5 +20,5 @@ I undertook this project in this manner to not only develop my Python programmin
 <h2>Further Action</h2>
 
 This is an ongoing project. I have plans to implement:
-- Simple user/bot interaction, enabling users to request 
+- Simple user/bot interaction, enabling users to request specific data
 - Database for storing activity data to compile leaderboards, store data for future reference
