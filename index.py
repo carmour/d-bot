@@ -83,7 +83,6 @@ def show_biz(user_id, activity_id):
     if test_act['visibility'] == 'only_me':
         name = helper.find_user(user_id)['name']
         logging_handler.posts_logger.info(f"{name} posted a private activity with an ID of {activity_id}.")
-        return
     else:
         disco_webhook.push_disco(test_act)
 

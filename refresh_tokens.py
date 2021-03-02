@@ -35,5 +35,6 @@ def refresh_access(refresh_token, user_id):
     generate_tokens = requests.post(auth_url, data=payload, verify=False)
     new_refresh_token = generate_tokens.json()['refresh_token']
     new_access_token = generate_tokens.json()['access_token']
+    # can we just not write to file? remove storage of access tokens -- for heroku hosting
     helper.write_tokens(new_refresh_token, new_access_token, user_id)
     return new_access_token
