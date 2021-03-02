@@ -6,11 +6,12 @@ import logging
 import helper
 import logging_handler
 
-load_dotenv()
-
 disco_url = os.getenv('DISCO_URL')
 
 def push_disco(activity):
+    """
+    Pushes the relevant activity information to the Discord endpoint.
+    """
     user_id = str(activity['athlete']['id'])
     name = helper.find_user(str(activity['athlete']['id']))['name']
     activity_type = activity['name']
@@ -22,9 +23,3 @@ def push_disco(activity):
     
     webhook = DiscordWebhook(url=disco_url, username='Twang reloaded', content=content)
     response = webhook.execute()
-
-
-# embed = DiscordEmbed(title='New Strava event!', color=242424)
-# icon_url can be picture of geoff??
-
-# webhook.add_embed(embed)

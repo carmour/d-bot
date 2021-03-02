@@ -1,6 +1,7 @@
 import json
 
 def find_user(user_id):
+    """Finds user in user_ids.json file based on user ID."""
     f = open('user_ids.json')
     user_data = json.load(f)
     for user in user_data:
@@ -8,6 +9,7 @@ def find_user(user_id):
             return user
 
 def write_tokens(new_refresh_token, new_access_token, user_id):
+    """Writes new refresh and access token to user_ids.json file."""
     user = find_user(user_id)
     with open('user_ids.json', 'r') as f:
         user_data = json.load(f)
